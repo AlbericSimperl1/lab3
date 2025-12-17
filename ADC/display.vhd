@@ -15,7 +15,7 @@ entity display is
         -- anode = which digit
         shown_digit : out STD_LOGIC_VECTOR(3 downto 0); 
         -- leds per digit
-        seg : out STD_LOGIC_VECTOR(6 downto 0) 
+        segments : out STD_LOGIC_VECTOR(6 downto 0) 
     ); 
 end display; 
  
