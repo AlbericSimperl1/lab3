@@ -1,32 +1,23 @@
-
 library IEEE; 
-
 use IEEE.STD_LOGIC_1164.ALL; 
-
 use IEEE.NUMERIC_STD.ALL; 
-
  
-
 entity top is 
-
     Port (  
         -- std
         clk : in STD_LOGIC;
         -- wizard 
         vauxp6 : in STD_LOGIC; 
         vauxn6 : in STD_LOGIC;
-        --  
+        -- io
         sw : in STD_LOGIC_VECTOR(1 downto 0); 
         btnC : in STD_LOGIC; 
         shown_digit : out STD_LOGIC_VECTOR(3 downto 0); 
         segments : out STD_LOGIC_VECTOR(6 downto 0); 
         led : out STD_LOGIC_VECTOR(15 downto 0) 
     ); 
-
 end top; 
-
  
-
 architecture Behavioral of top is 
     component xadc_wiz_0 
         port ( 
@@ -47,22 +38,18 @@ architecture Behavioral of top is
             alarm_out : out STD_LOGIC 
         ); 
     end component; 
-
      
-
-    component values 
+    component value_display_converter 
         Port (  
-            value : in STD_LOGIC_VECTOR(11 downto 0); 
-            mode : in STD_LOGIC_VECTOR(1 downto 0); 
-            digit0 : out STD_LOGIC_VECTOR(3 downto 0); 
-            digit1 : out STD_LOGIC_VECTOR(3 downto 0); 
-            digit2 : out STD_LOGIC_VECTOR(3 downto 0); 
-            digit3 : out STD_LOGIC_VECTOR(3 downto 0) 
+            adc_value : in STD_LOGIC_VECTOR(11 downto 0); 
+            display_mode : in STD_LOGIC_VECTOR(1 downto 0); 
+            d0 : out STD_LOGIC_VECTOR(3 downto 0); 
+            d1 : out STD_LOGIC_VECTOR(3 downto 0); 
+            d2 : out STD_LOGIC_VECTOR(3 downto 0); 
+            d3 : out STD_LOGIC_VECTOR(3 downto 0) 
         ); 
     end component; 
-
      
-
     component display 
         Port (  
             clk : in STD_LOGIC; 
@@ -75,9 +62,7 @@ architecture Behavioral of top is
             segments : out STD_LOGIC_VECTOR(6 downto 0) 
         ); 
     end component; 
-
      
-
     signal adc_data : STD_LOGIC_VECTOR(15 downto 0); 
     signal adc_value : STD_LOGIC_VECTOR(11 downto 0); 
     signal eoc : STD_LOGIC; 
@@ -102,26 +87,26 @@ begin
             eos_out => open, 
             alarm_out => open 
         ); 
-
+        
+    -- top 12 bits
     adc_value <= adc_data(15 downto 4); 
-
+    
     led <= adc_data; 
-
-    values : values 
+    
+    value_conv : value_display_converter 
         port map ( 
-            value => adc_value, 
-            mode => sw(1 downto 0), 
-            digit0 => d0,
-            digit1 => d1, 
-            digit2 => d2, 
-            digit3 => d3 
+            adc_value => adc_value, 
+            display_mode => sw(1 downto 0), 
+            d0 => d0,
+            d1 => d1, 
+            d2 => d2, 
+            d3 => d3 
         ); 
      
-    -- Display driver 
-    display : display 
+    seven_seg_display : display 
         port map ( 
             clk => clk,
-            reset => btnC, 
+            rst => btnC, 
             d0 => d0, 
             d1 => d1, 
             d2 => d2, 
@@ -129,4 +114,5 @@ begin
             shown_digit => shown_digit, 
             segments => segments 
         ); 
-end Behavioral; 
+        
+end Behavioral;
