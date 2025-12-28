@@ -65,13 +65,13 @@ begin
                 d2 <= decimal_bcd(11 downto 8); 
                 d3 <= decimal_bcd(15 downto 12); 
                  
-            when "01" =>  -- Hexadecimaal mode (0xFFF) 
-                d3 <= std_logic_vector(value_unsigned(11 downto 8));  -- MSB links 
+            when "01" =>
+                d3 <= std_logic_vector(value_unsigned(11 downto 8)); -- MSB 
                 d2 <= std_logic_vector(value_unsigned(7 downto 4)); 
-                d1 <= std_logic_vector(value_unsigned(3 downto 0));   -- LSB 
-                d0 <= "0000";                                          -- Rechts leeg 
+                d1 <= std_logic_vector(value_unsigned(3 downto 0)); -- LSB 
+                d0 <= "0000";                                          
                  
-            when "10" =>  -- Voltage mode (0.XXX V) 
+            when "10" =>
                 -- Voltage conversie: mV = adc_value * 1000 / 4096 
                 mV := resize((value_unsigned * to_unsigned(125, 8)) srl 9, 16); 
            
@@ -79,12 +79,12 @@ begin
                     mV := to_unsigned(999, 16); 
                 end if; 
 
-                voltage_bcd := binary_to_bcd(mV(11 downto 0)); 
+                voltage_bcd := bin_to_bcd(mV(11 downto 0)); 
                  
-                d0 <= voltage_bcd(3 downto 0);    -- a
-                d1 <= voltage_bcd(7 downto 4);    -- b0 
-                d2 <= voltage_bcd(11 downto 8);   -- c00
-                d3 <= "0000";                     -- always 0,cba
+                d0 <= voltage_bcd(3 downto 0); -- a
+                d1 <= voltage_bcd(7 downto 4); -- b0 
+                d2 <= voltage_bcd(11 downto 8); -- c00
+                d3 <= "0000"; -- always 0
 
             when others => 
                 d0 <= "1111";
