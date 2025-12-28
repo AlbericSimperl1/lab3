@@ -28,9 +28,9 @@ architecture Behavioral of display is
     signal ds : unsigned(1 downto 0) := (others => '0'); 
 begin 
 
-    process(clk, reset) 
+    process(clk, rst) 
     begin 
-        if reset = '1' then 
+        if rst = '1' then 
             refresh <= (others => '0'); 
         elsif rising_edge(clk) then 
             refresh <= refresh + 1; 
@@ -40,7 +40,7 @@ begin
 
     process(ds, d0, d1, d2, d3) 
     begin 
-        case digit_select is 
+        case ds is 
             when "00" =>  
                 shown_digit <= "1110"; 
                 d <= d0; 
@@ -63,7 +63,7 @@ begin
 
     begin 
         case d is 
-                                       -- 0 = on 1 = off 
+            -- 0 = on 1 = off 
             when "0000" => segments <= "1000000"; -- 0 
             when "0001" => segments <= "1111001"; -- 1 
             when "0010" => segments <= "0100100"; -- 2 
